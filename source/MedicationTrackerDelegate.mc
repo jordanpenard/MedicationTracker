@@ -202,6 +202,13 @@ class SettingsMenuDelegate extends WatchUi.Menu2InputDelegate {
     //! @param item The selected menu item
     public function onSelect(item as MenuItem) as Void {
         var id = item.getId() as String;
+
+        if (id.equals("retention")) {
+            WatchUi.pushView(new RetentionPicker(), new RetentionPickerDelegate(), WatchUi.SLIDE_LEFT);
+
+        } else {
+            WatchUi.requestUpdate();
+        }
     }
 
     //! Handle the back key being pressed
