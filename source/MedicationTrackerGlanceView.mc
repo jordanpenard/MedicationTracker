@@ -22,7 +22,7 @@ class WidgetGlanceView extends Ui.GlanceView {
 
     if (historyData != null) {
       for (var i = 1; i <= 5; i++){
-        if (i == 1 or Properties.getValue("medication"+i+"_en")) {
+        if (Properties.getValue("medication"+i+"_en")) {
           if (historyData.hasKey(i) and historyData[i].size() != 0) {
             var now = new Moment(Time.now().value());
             var date = new Moment(historyData[i][historyData[i].size()-1]);

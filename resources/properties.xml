@@ -2,6 +2,7 @@
     <property id="retention_length" type="number">1</property>
     <property id="retention_unit" type="number">1</property>
     <property id="medication1_name" type="string">Medication 1</property>
+    <property id="medication1_en" type="boolean">true</property>
     <property id="medication1_type" type="number">0</property>
     <property id="medication2_name" type="string">Medication 2</property>
     <property id="medication2_en" type="boolean">false</property>

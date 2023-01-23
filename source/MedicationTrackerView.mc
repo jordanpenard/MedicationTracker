@@ -10,14 +10,13 @@ class MedicationTrackerView extends WatchUi.View {
 
     // Load your resources here
     function onLayout(dc as Dc) as Void {
-        //setLayout(Rez.Layouts.MainLayout(dc));
         var mainMenu = new WatchUi.Menu2({:title=>"Medication tracker"});
 
         mainMenu.addItem(new MenuItem("Take medication", null, "take", {}));
         mainMenu.addItem(new MenuItem("History", null, "history", {}));
         mainMenu.addItem(new MenuItem("Settings", null, "settings", {}));
         
-        WatchUi.pushView(mainMenu, new MainMenuDelegate(), WatchUi.SLIDE_LEFT);
+        ViewManager.pushView(mainMenu, new MainMenuDelegate(), WatchUi.SLIDE_LEFT);
     }
 
     // Called when this View is brought to the foreground. Restore
