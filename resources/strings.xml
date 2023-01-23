@@ -1,0 +1,20 @@
+<strings>
+    <string id="AppName">Medication Tracker</string>
+    <string id="retention">Retention</string>
+    <string id="retentionDescription">How long to keep the history for</string>
+    <string id="retention_length">Retention length</string>
+    <string id="retention_unit">Retention unit</string>
+    <string id="week">Week</string>
+    <string id="month">Month</string>
+    <string id="year">Year</string>
+    <string id="spray">Spray</string>
+    <string id="tablet">Tablet</string>
+    <string id="medication_name">Name</string>
+    <string id="medication_en">In use</string>
+    <string id="medication_type">Type</string>
+    <string id="medication1">Medication 1</string>
+    <string id="medication2">Medication 2</string>
+    <string id="medication3">Medication 3</string>
+    <string id="medication4">Medication 4</string>
+    <string id="medication5">Medication 5</string>
+</strings>

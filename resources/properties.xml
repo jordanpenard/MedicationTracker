@@ -1,0 +1,18 @@
+<properties>
+    <property id="retention_length" type="number">1</property>
+    <property id="retention_unit" type="number">1</property>
+    <property id="medication1_name" type="string">Medication 1</property>
+    <property id="medication1_type" type="number">0</property>
+    <property id="medication2_name" type="string">Medication 2</property>
+    <property id="medication2_en" type="boolean">false</property>
+    <property id="medication2_type" type="number">0</property>
+    <property id="medication3_name" type="string">Medication 3</property>
+    <property id="medication3_en" type="boolean">false</property>
+    <property id="medication3_type" type="number">0</property>
+    <property id="medication4_name" type="string">Medication 4</property>
+    <property id="medication4_en" type="boolean">false</property>
+    <property id="medication4_type" type="number">0</property>
+    <property id="medication5_name" type="string">Medication 5</property>
+    <property id="medication5_en" type="boolean">false</property>
+    <property id="medication5_type" type="number">0</property>
+</properties>

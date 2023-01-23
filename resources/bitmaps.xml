@@ -1,0 +1,5 @@
+<resources>
+    <bitmap id="LauncherIcon" filename="images/logo.png" />
+    <bitmap id="Tablet" filename="images/tablet-white.png" />
+    <bitmap id="Spray" filename="images/spray-white.png" />
+</resources>
