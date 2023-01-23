@@ -1,7 +1,7 @@
 <settings>
     <group id="Retention" title="@Strings.retention" description="@Strings.retentionDescription">
         <setting propertyKey="@Properties.retention_length" title="@Strings.retention_length">
-            <settingConfig type="numeric" min="1" />
+            <settingConfig type="numeric" min="1" max="9"/>
         </setting>
 
         <setting propertyKey="@Properties.retention_unit" title="@Strings.retention_unit">

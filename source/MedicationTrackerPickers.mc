@@ -153,7 +153,7 @@ class RetentionPicker extends WatchUi.Picker {
         var title = new WatchUi.Text({:text=>"Retention", :locX=>WatchUi.LAYOUT_HALIGN_CENTER,
             :locY=>WatchUi.LAYOUT_VALIGN_BOTTOM, :color=>Graphics.COLOR_WHITE});
         var numberFactory = new $.NumberFactory(1, 9, 1, {:font=>Graphics.FONT_MEDIUM});
-        var unitFactory = new $.WordFactory(["Week", "Month", "Year"], {:font=>Graphics.FONT_MEDIUM});
+        var unitFactory = new $.WordFactory([$.Rez.Strings.week, $.Rez.Strings.month, $.Rez.Strings.year], {:font=>Graphics.FONT_MEDIUM});
         Picker.initialize({:title=>title, :pattern=>[numberFactory, unitFactory], :defaults=>[Properties.getValue("retention_length")-1, Properties.getValue("retention_unit")]});
     }
 
