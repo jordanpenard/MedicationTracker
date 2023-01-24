@@ -150,7 +150,7 @@ class RetentionPicker extends WatchUi.Picker {
 
     //! Constructor
     public function initialize() {
-        var title = new WatchUi.Text({:text=>"Retention", :locX=>WatchUi.LAYOUT_HALIGN_CENTER,
+        var title = new WatchUi.Text({:text=>$.Rez.Strings.retention, :locX=>WatchUi.LAYOUT_HALIGN_CENTER,
             :locY=>WatchUi.LAYOUT_VALIGN_BOTTOM, :color=>Graphics.COLOR_WHITE});
         var numberFactory = new $.NumberFactory(1, 9, 1, {:font=>Graphics.FONT_MEDIUM});
         var unitFactory = new $.WordFactory([$.Rez.Strings.week, $.Rez.Strings.month, $.Rez.Strings.year], {:font=>Graphics.FONT_MEDIUM});
@@ -187,7 +187,7 @@ class RetentionPickerDelegate extends WatchUi.PickerDelegate {
     public function onAccept(values as Array) as Boolean {
         Properties.setValue("retention_length", values[0]);
         Properties.setValue("retention_unit", values[1]);
-        ViewManager.popView(WatchUi.SLIDE_RIGHT);
+        (viewStack[viewStack.size()-2] as Menu2).getItem(0).setSubLabel(values[0] + " " + Helper.retentionUnitMap(values[1]));
         ViewManager.popView(WatchUi.SLIDE_RIGHT);
         return true;
     }
@@ -239,7 +239,7 @@ class CharacterFactory extends WatchUi.PickerFactory {
     //! @return Drawable for the item
     public function getDrawable(index as Number, selected as Boolean) as Drawable? {
         if (index == _characterSet.length()) {
-            return new WatchUi.Text({:text=>"OK", :color=>Graphics.COLOR_WHITE,
+            return new WatchUi.Text({:text=>$.Rez.Strings.ok, :color=>Graphics.COLOR_WHITE,
                 :font=>Graphics.FONT_LARGE, :locX=>WatchUi.LAYOUT_HALIGN_CENTER, :locY=>WatchUi.LAYOUT_VALIGN_CENTER});
         }
 

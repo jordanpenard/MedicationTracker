@@ -28,7 +28,7 @@ class WidgetGlanceView extends Ui.GlanceView {
             var date = new Moment(historyData[i][historyData[i].size()-1]);
             var deltaInSeconds = date.subtract(now).value();
             var deltaInHours = deltaInSeconds/3600;
-            dataToDisplay.add(Properties.getValue("medication"+i+"_name") + " : "+deltaInHours.toString()+"h ago");
+            dataToDisplay.add(Properties.getValue("medication"+i+"_name") + " : "+deltaInHours.toString()+"h "+Application.loadResource($.Rez.Strings.ago));
           }
         }
       }
@@ -37,7 +37,7 @@ class WidgetGlanceView extends Ui.GlanceView {
     var textHight = dc.getFontHeight(Graphics.FONT_GLANCE);
 
     if (dataToDisplay.size() == 0) {
-      dc.drawText(0, (dc.getHeight()-textHight)/2, Graphics.FONT_GLANCE, "No data", Graphics.TEXT_JUSTIFY_LEFT);
+      dc.drawText(0, (dc.getHeight()-textHight)/2, Graphics.FONT_GLANCE, Application.loadResource($.Rez.Strings.no_data_yet), Graphics.TEXT_JUSTIFY_LEFT);
     
     } else {
       var margin = 0;

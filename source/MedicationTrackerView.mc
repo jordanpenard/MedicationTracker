@@ -10,11 +10,11 @@ class MedicationTrackerView extends WatchUi.View {
 
     // Load your resources here
     function onLayout(dc as Dc) as Void {
-        var mainMenu = new WatchUi.Menu2({:title=>"Medication tracker"});
+        var mainMenu = new WatchUi.Menu2({:title=>$.Rez.Strings.AppName});
 
-        mainMenu.addItem(new MenuItem("Take medication", null, "take", {}));
-        mainMenu.addItem(new MenuItem("History", null, "history", {}));
-        mainMenu.addItem(new MenuItem("Settings", null, "settings", {}));
+        mainMenu.addItem(new MenuItem($.Rez.Strings.take_med, null, "take", {}));
+        mainMenu.addItem(new MenuItem($.Rez.Strings.history, null, "history", {}));
+        mainMenu.addItem(new MenuItem($.Rez.Strings.settings, null, "settings", {}));
         
         ViewManager.pushView(mainMenu, new MainMenuDelegate(), WatchUi.SLIDE_LEFT);
     }

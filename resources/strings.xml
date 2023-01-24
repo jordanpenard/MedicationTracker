@@ -1,20 +1,27 @@
 <strings>
     <string id="AppName">Medication Tracker</string>
     <string id="retention">Retention</string>
-    <string id="retentionDescription">How long to keep the history for</string>
-    <string id="retention_length">Retention length</string>
-    <string id="retention_unit">Retention unit</string>
     <string id="week">Week</string>
     <string id="month">Month</string>
     <string id="year">Year</string>
     <string id="spray">Spray</string>
     <string id="tablet">Tablet</string>
-    <string id="medication_name">Name</string>
-    <string id="medication_en">In use</string>
-    <string id="medication_type">Type</string>
+    <string id="name">Name</string>
+    <string id="type">Type</string>
+    <string id="status">Status</string>
     <string id="medication1">Medication 1</string>
     <string id="medication2">Medication 2</string>
     <string id="medication3">Medication 3</string>
     <string id="medication4">Medication 4</string>
     <string id="medication5">Medication 5</string>
+    <string id="take_med">Take medication</string>
+    <string id="take">Take</string>
+    <string id="history">History</string>
+    <string id="settings">Settings</string>
+    <string id="keep_data_for">Keep data for</string>
+    <string id="enabled">Enabled</string>
+    <string id="disabled">Disabled</string>
+    <string id="ago" scope="glance">ago</string>
+    <string id="ok">OK</string>
+    <string id="no_data_yet">No data yet</string>
 </strings>

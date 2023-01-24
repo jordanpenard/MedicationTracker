@@ -3,10 +3,6 @@ import Toybox.WatchUi;
 import Toybox.Application;
 import Toybox.Time;
 
-var medicationIconMap = {0=>new WatchUi.Bitmap({:rezId=>Rez.Drawables.Spray, :locY=>20}),
-                        1=>new WatchUi.Bitmap({:rezId=>Rez.Drawables.Tablet, :locY=>20})};
-var medicationTypeMap = {0=>WatchUi.loadResource(Rez.Strings.spray), 1=>WatchUi.loadResource(Rez.Strings.tablet)};
-var retentionUnitMap = {0=>WatchUi.loadResource(Rez.Strings.week), 1=>WatchUi.loadResource(Rez.Strings.month), 2=>WatchUi.loadResource(Rez.Strings.year)};
 
 class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
 
@@ -23,16 +19,16 @@ class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
         if (id.equals("take") or id.equals("history")) {
             var menuTitle;
             if (id.equals("take")) {
-                menuTitle = "Take medication";
+                menuTitle = $.Rez.Strings.take_med;
             } else {
-                menuTitle = "History";
+                menuTitle = $.Rez.Strings.history;
             }
 
             var menu = new WatchUi.Menu2({:title=>menuTitle});
 
             for (var i = 1; i <= 5; i++) {
                 if (Properties.getValue("medication"+i+"_en")){
-                    menu.addItem(new IconMenuItem(Properties.getValue("medication"+i+"_name"), null, i, medicationIconMap[Properties.getValue("medication"+i+"_type")], {}));
+                    menu.addItem(new IconMenuItem(Properties.getValue("medication"+i+"_name"), null, i, Helper.medicationIconMap(Properties.getValue("medication"+i+"_type")), {}));
                 }
             }
             
@@ -43,14 +39,14 @@ class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
             }
 
         } else if (id.equals("settings")) {
-            var retention = Properties.getValue("retention_length") + " " + retentionUnitMap[Properties.getValue("retention_unit")];
+            var retention = Properties.getValue("retention_length") + " " + Helper.retentionUnitMap(Properties.getValue("retention_unit"));
 
-            var settingsMenu = new WatchUi.Menu2({:title=>"Settings"});
-            settingsMenu.addItem(new MenuItem("Keep data for", retention, "retention", {}));
+            var settingsMenu = new WatchUi.Menu2({:title=>$.Rez.Strings.settings});
+            settingsMenu.addItem(new MenuItem($.Rez.Strings.keep_data_for, retention, "retention", {}));
 
             for (var i = 1; i <= 5; i++) {
-                var enabled = Properties.getValue("medication"+i+"_en") ? "Enabled" : "Disabled";
-                settingsMenu.addItem(new IconMenuItem(Properties.getValue("medication"+i+"_name"), enabled, i, medicationIconMap[Properties.getValue("medication"+i+"_type")], {}));
+                var enabled = Properties.getValue("medication"+i+"_en") ? Application.loadResource($.Rez.Strings.enabled) : Application.loadResource($.Rez.Strings.disabled);
+                settingsMenu.addItem(new IconMenuItem(Properties.getValue("medication"+i+"_name"), enabled, i, Helper.medicationIconMap(Properties.getValue("medication"+i+"_type")), {}));
             }
             
             ViewManager.pushView(settingsMenu, new SettingsMenuDelegate(), WatchUi.SLIDE_LEFT);
@@ -78,7 +74,7 @@ class TakeMenuDelegate extends WatchUi.Menu2InputDelegate {
     public function onSelect(item as MenuItem) as Void {
         var id = item.getId() as String;
 
-        var message = "Take "+Properties.getValue("medication"+id+"_name")+"?";
+        var message = Application.loadResource($.Rez.Strings.take)+" "+Properties.getValue("medication"+id+"_name")+"?";
         var dialog = new WatchUi.Confirmation(message);
         ViewManager.pushView(dialog, new TakeConfirmationDelegate(id), WatchUi.SLIDE_IMMEDIATE);
     }
@@ -151,7 +147,7 @@ class HistoryMenuDelegate extends WatchUi.Menu2InputDelegate {
 
         var historyData = Storage.getValue("history_data") as Dictionary<Number, Array<Number>>?;
         if (historyData == null or historyData[id] == null) {
-            historyMenu.addItem(new MenuItem("No data yet", null, 0, {}));
+            historyMenu.addItem(new MenuItem(Application.loadResource($.Rez.Strings.no_data_yet), null, 0, {}));
             ViewManager.pushView(historyMenu, new MedicationTrackerDelegate(), WatchUi.SLIDE_LEFT);
 
         } else {
@@ -215,9 +211,9 @@ class SettingsMenuDelegate extends WatchUi.Menu2InputDelegate {
 
             var medicationSettingMenu = new WatchUi.Menu2({:title=>Properties.getValue("medication"+id+"_name")});
             
-            medicationSettingMenu.addItem(new MenuItem("Name", Properties.getValue("medication"+id+"_name"), ["name", id], {}));
-            medicationSettingMenu.addItem(new ToggleMenuItem("Status", {:enabled=>"Enabled", :disabled=>"Disabled"}, ["status", id], enabled, {}));
-            medicationSettingMenu.addItem(new IconMenuItem("Type", medicationTypeMap[Properties.getValue("medication"+id+"_type")], ["type", id], medicationIconMap[Properties.getValue("medication"+id+"_type")], {}));
+            medicationSettingMenu.addItem(new MenuItem(Application.loadResource($.Rez.Strings.name), Properties.getValue("medication"+id+"_name"), ["name", id], {}));
+            medicationSettingMenu.addItem(new ToggleMenuItem(Application.loadResource($.Rez.Strings.status), {:enabled=>Application.loadResource($.Rez.Strings.enabled), :disabled=>Application.loadResource($.Rez.Strings.disabled)}, ["status", id], enabled, {}));
+            medicationSettingMenu.addItem(new IconMenuItem(Application.loadResource($.Rez.Strings.type), Helper.medicationTypeMap(Properties.getValue("medication"+id+"_type")), ["type", id], Helper.medicationIconMap(Properties.getValue("medication"+id+"_type")), {}));
             
             ViewManager.pushView(medicationSettingMenu, new MedicationSettingMenuMenuDelegate(), WatchUi.SLIDE_LEFT);
         }
@@ -239,8 +235,9 @@ class MedicationSettingMenuMenuDelegate extends WatchUi.Menu2InputDelegate {
     //! Handle an item being selected
     //! @param item The selected menu item
     public function onSelect(item as MenuItem) as Void {
-        var action = item.getId()[0] as String;
-        var id = item.getId()[1] as Number;
+        var identifier = item.getId() as Array<String or Number>;
+        var action = identifier[0] as String;
+        var id = identifier[1] as Number;
 
         if (action.equals("name")) {
             var initialText = Properties.getValue("medication"+id+"_name");
@@ -255,18 +252,18 @@ class MedicationSettingMenuMenuDelegate extends WatchUi.Menu2InputDelegate {
             var currentStatus = Properties.getValue("medication"+id+"_en") as Boolean;
             Properties.setValue("medication"+id+"_en", !currentStatus);
             var parent_menu = viewStack[viewStack.size()-2] as Menu2;
-            parent_menu.getItem(id).setSubLabel(!currentStatus ? "Enabled" : "Disabled");
+            parent_menu.getItem(id).setSubLabel(!currentStatus ? Application.loadResource($.Rez.Strings.enabled) : Application.loadResource($.Rez.Strings.disabled));
 
         } else if (action.equals("type")) {
             var currentType = Properties.getValue("medication"+id+"_type") as Number;
-            var newType = (currentType == medicationTypeMap.keys().size()-1) ? 0 : (currentType+1);
+            var newType = (currentType == Helper.nbMedicationType-1) ? 0 : (currentType+1);
             Properties.setValue("medication"+id+"_type", newType);
 
             var current_menu = viewStack[viewStack.size()-1] as Menu2;
-            (current_menu.getItem(2) as IconMenuItem).setIcon(medicationIconMap[newType]);
-            current_menu.getItem(2).setSubLabel(medicationTypeMap[newType]);
+            (current_menu.getItem(2) as IconMenuItem).setIcon(Helper.medicationIconMap(newType));
+            current_menu.getItem(2).setSubLabel(Helper.medicationTypeMap(newType));
             var parent_menu = viewStack[viewStack.size()-2] as Menu2;
-            (parent_menu.getItem(id) as IconMenuItem).setIcon(medicationIconMap[newType]);
+            (parent_menu.getItem(id) as IconMenuItem).setIcon(Helper.medicationIconMap(newType));
 
         } else {
 
