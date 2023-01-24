@@ -1,4 +1,4 @@
-<properties>
+<resources>
     <property id="retention_length" type="number">1</property>
     <property id="retention_unit" type="number">1</property>
     <property id="medication1_name" type="string">Medication 1</property>
@@ -16,4 +16,4 @@
     <property id="medication5_name" type="string">Medication 5</property>
     <property id="medication5_en" type="boolean">false</property>
     <property id="medication5_type" type="number">0</property>
-</properties>
+</resources>

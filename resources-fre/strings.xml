@@ -1,0 +1,27 @@
+<resources>
+    <string id="AppName">Medication Tracker</string>
+    <string id="retention">Retention</string>
+    <string id="week">Semaine</string>
+    <string id="month">Mois</string>
+    <string id="year">Année</string>
+    <string id="spray">Spray</string>
+    <string id="tablet">Cachet</string>
+    <string id="name">Nom</string>
+    <string id="type">Type</string>
+    <string id="status">Status</string>
+    <string id="medication1">Medicament 1</string>
+    <string id="medication2">Medicament 2</string>
+    <string id="medication3">Medicament 3</string>
+    <string id="medication4">Medicament 4</string>
+    <string id="medication5">Medicament 5</string>
+    <string id="take_med">Prendre medicament</string>
+    <string id="take">Prendre</string>
+    <string id="history">Historique</string>
+    <string id="settings">Réglages</string>
+    <string id="keep_data_for">Garder les données</string>
+    <string id="enabled">Actif</string>
+    <string id="disabled">Désactiver</string>
+    <string id="ago" scope="glance">ago</string>
+    <string id="ok">OK</string>
+    <string id="no_data_yet">Aucune donnée</string>
+</resources>

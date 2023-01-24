@@ -1,4 +1,4 @@
-<strings>
+<resources>
     <string id="AppName">Medication Tracker</string>
     <string id="retention">Retention</string>
     <string id="week">Week</string>
@@ -24,4 +24,4 @@
     <string id="ago" scope="glance">ago</string>
     <string id="ok">OK</string>
     <string id="no_data_yet">No data yet</string>
-</strings>
+</resources>
