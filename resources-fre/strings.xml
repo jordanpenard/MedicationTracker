@@ -23,7 +23,7 @@
     <string id="disabled">Désactiver</string>
     <string id="ago" scope="glance">ago</string>
     <string id="ok">OK</string>
-    <string id="no_data_yet">Aucune donnée</string>
+    <string id="no_data_yet" scope="glance">Aucune donnée</string>
     <string id="edit">Editer</string>
     <string id="delete">Supprimer</string>
 </resources>
