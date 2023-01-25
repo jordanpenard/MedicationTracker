@@ -375,7 +375,7 @@ class MedicationNamePickerDelegate extends WatchUi.PickerDelegate {
                 current_menu.setTitle(new_name);
                 current_menu.getItem(0).setSubLabel(new_name);
                 var parent_menu = viewStack[viewStack.size()-3] as Menu2;
-                parent_menu.getItem(_medicationId).setLabel(new_name);
+                parent_menu.getItem(_medicationId+1).setLabel(new_name);
             }
             ViewManager.popView(WatchUi.SLIDE_RIGHT);
         }

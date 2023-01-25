@@ -21,6 +21,7 @@ class MedicationTrackerApp extends Application.AppBase {
         return [ new MedicationTrackerView(), new MedicationTrackerDelegate() ] as Array<Views or InputDelegates>;
     }
 
+    (:glance)
     function getGlanceView() {
         return [ new WidgetGlanceView() ];
     }

@@ -7,10 +7,24 @@ class Helper {
 
     public const nbMedicationType = 2;
 
-    public function medicationIconMap(i as Number) as Bitmap {
-        switch (i) {
-            case 0: return new WatchUi.Bitmap({:rezId=>$.Rez.Drawables.Spray, :locY=>20});
-            case 1: return new WatchUi.Bitmap({:rezId=>$.Rez.Drawables.Tablet, :locY=>20});
+    (:glance)
+    public const nbMedications = 4;
+
+    (:glance)
+    public function getMedicationIconeSymbol(medicationId as Number, glanceView as Boolean) as Symbol {
+        switch (Properties.getValue("medication"+medicationId+"_type")) {
+            case 0: 
+                if (glanceView) {
+                    return $.Rez.Drawables.SprayGlance;
+                } else {
+                    return $.Rez.Drawables.Spray;
+                }
+            case 1:
+                if (glanceView) {
+                    return $.Rez.Drawables.TabletGlance;
+                } else {
+                    return $.Rez.Drawables.Tablet;
+                }            
         }
         throw new Toybox.Lang.Exception();
     }

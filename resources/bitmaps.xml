@@ -1,5 +1,7 @@
 <resources>
     <bitmap id="LauncherIcon" filename="images/logo.png" />
-    <bitmap id="Tablet" filename="images/tablet-white.png" />
+    <bitmap id="Tablet" filename="images/tablet-white.png" scaleX="80%" scaleRelativeTo="image" />
     <bitmap id="Spray" filename="images/spray-white.png" />
+    <bitmap id="TabletGlance" scope="glance" filename="images/tablet-white.png" scaleX="50%" scaleRelativeTo="image" />
+    <bitmap id="SprayGlance" scope="glance" filename="images/spray-white.png" scaleX="55%" scaleRelativeTo="image" />
 </resources>

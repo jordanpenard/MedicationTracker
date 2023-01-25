@@ -26,9 +26,10 @@ class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
 
             var menu = new WatchUi.Menu2({:title=>menuTitle});
 
-            for (var i = 1; i <= 5; i++) {
+            for (var i = 0; i < Helper.nbMedications; i++) {
                 if (Properties.getValue("medication"+i+"_en")){
-                    menu.addItem(new IconMenuItem(Properties.getValue("medication"+i+"_name"), null, i, Helper.medicationIconMap(Properties.getValue("medication"+i+"_type")), {}));
+                    var bitmap = new WatchUi.Bitmap({:rezId=>Helper.getMedicationIconeSymbol(i, false), :locY=>20});
+                    menu.addItem(new IconMenuItem(Properties.getValue("medication"+i+"_name"), null, i, bitmap, {}));
                 }
             }
             
@@ -44,9 +45,10 @@ class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
             var settingsMenu = new WatchUi.Menu2({:title=>$.Rez.Strings.settings});
             settingsMenu.addItem(new MenuItem($.Rez.Strings.keep_data_for, retention, "retention", {}));
 
-            for (var i = 1; i <= 5; i++) {
+            for (var i = 0; i < Helper.nbMedications; i++) {
                 var enabled = Properties.getValue("medication"+i+"_en") ? Application.loadResource($.Rez.Strings.enabled) : Application.loadResource($.Rez.Strings.disabled);
-                settingsMenu.addItem(new IconMenuItem(Properties.getValue("medication"+i+"_name"), enabled, i, Helper.medicationIconMap(Properties.getValue("medication"+i+"_type")), {}));
+                var bitmap = new WatchUi.Bitmap({:rezId=>Helper.getMedicationIconeSymbol(i, false), :locY=>20});
+                settingsMenu.addItem(new IconMenuItem(Properties.getValue("medication"+i+"_name"), enabled, i, bitmap, {}));
             }
             
             ViewManager.pushView(settingsMenu, new SettingsMenuDelegate(), WatchUi.SLIDE_LEFT);
@@ -72,7 +74,7 @@ class TakeMenuDelegate extends WatchUi.Menu2InputDelegate {
     //! Handle an item being selected
     //! @param item The selected menu item
     public function onSelect(item as MenuItem) as Void {
-        var id = item.getId() as String;
+        var id = item.getId() as Number;
 
         var message = Application.loadResource($.Rez.Strings.take)+" "+Properties.getValue("medication"+id+"_name")+"?";
         var dialog = new WatchUi.Confirmation(message);
@@ -115,7 +117,7 @@ class TakeConfirmationDelegate extends WatchUi.ConfirmationDelegate {
                                     2=>Gregorian.SECONDS_PER_YEAR};
             var retention = Properties.getValue("retention_length") * retentionUnitMap[Properties.getValue("retention_unit")];
             var retentionLimit = Time.now().subtract(new Time.Duration(retention)).value();
-            for (var i = 1; i <= 5; i++) {
+            for (var i = 1; i <= Helper.nbMedications; i++) {
                 if (historyData[i] != null) {
                     for (var j = historyData[i].size()-1; j >= 0; j--) {
                         if (historyData[i][j] < retentionLimit) {
@@ -142,7 +144,7 @@ class HistoryMenuDelegate extends WatchUi.Menu2InputDelegate {
     //! Handle an item being selected
     //! @param item The selected menu item
     public function onSelect(item as MenuItem) as Void {
-        var medicationId = item.getId() as Integer;
+        var medicationId = item.getId() as Number;
         var historyMenu = new WatchUi.Menu2({:title=>Properties.getValue("medication"+medicationId+"_name")});
 
         Helper.populateHistoryMenu(historyMenu, medicationId);
@@ -177,7 +179,9 @@ class SettingsMenuDelegate extends WatchUi.Menu2InputDelegate {
             
             medicationSettingMenu.addItem(new MenuItem(Application.loadResource($.Rez.Strings.name), Properties.getValue("medication"+id+"_name"), ["name", id], {}));
             medicationSettingMenu.addItem(new ToggleMenuItem(Application.loadResource($.Rez.Strings.status), {:enabled=>Application.loadResource($.Rez.Strings.enabled), :disabled=>Application.loadResource($.Rez.Strings.disabled)}, ["status", id], enabled, {}));
-            medicationSettingMenu.addItem(new IconMenuItem(Application.loadResource($.Rez.Strings.type), Helper.medicationTypeMap(Properties.getValue("medication"+id+"_type")), ["type", id], Helper.medicationIconMap(Properties.getValue("medication"+id+"_type")), {}));
+            
+            var bitmap = new WatchUi.Bitmap({:rezId=>Helper.getMedicationIconeSymbol(id.toNumber(), false), :locY=>20});
+            medicationSettingMenu.addItem(new IconMenuItem(Application.loadResource($.Rez.Strings.type), Helper.medicationTypeMap(Properties.getValue("medication"+id+"_type")), ["type", id], bitmap, {}));
             
             ViewManager.pushView(medicationSettingMenu, new MedicationSettingMenuMenuDelegate(), WatchUi.SLIDE_LEFT);
         }
@@ -216,18 +220,19 @@ class MedicationSettingMenuMenuDelegate extends WatchUi.Menu2InputDelegate {
             var currentStatus = Properties.getValue("medication"+id+"_en") as Boolean;
             Properties.setValue("medication"+id+"_en", !currentStatus);
             var parent_menu = viewStack[viewStack.size()-2] as Menu2;
-            parent_menu.getItem(id).setSubLabel(!currentStatus ? Application.loadResource($.Rez.Strings.enabled) : Application.loadResource($.Rez.Strings.disabled));
+            parent_menu.getItem(id+1).setSubLabel(!currentStatus ? Application.loadResource($.Rez.Strings.enabled) : Application.loadResource($.Rez.Strings.disabled));
 
         } else if (action.equals("type")) {
             var currentType = Properties.getValue("medication"+id+"_type") as Number;
             var newType = (currentType == Helper.nbMedicationType-1) ? 0 : (currentType+1);
             Properties.setValue("medication"+id+"_type", newType);
 
+            var bitmap = new WatchUi.Bitmap({:rezId=>Helper.getMedicationIconeSymbol(id, false), :locY=>20});
             var current_menu = viewStack[viewStack.size()-1] as Menu2;
-            (current_menu.getItem(2) as IconMenuItem).setIcon(Helper.medicationIconMap(newType));
+            (current_menu.getItem(2) as IconMenuItem).setIcon(bitmap);
             current_menu.getItem(2).setSubLabel(Helper.medicationTypeMap(newType));
             var parent_menu = viewStack[viewStack.size()-2] as Menu2;
-            (parent_menu.getItem(id) as IconMenuItem).setIcon(Helper.medicationIconMap(newType));
+            (parent_menu.getItem(id+1) as IconMenuItem).setIcon(bitmap);
 
         } else {
 
