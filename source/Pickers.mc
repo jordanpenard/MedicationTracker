@@ -396,19 +396,14 @@ class DateAndTimePicker extends WatchUi.Picker {
         var title = new WatchUi.Text({:text=>$.Rez.Strings.edit, :locX=>WatchUi.LAYOUT_HALIGN_CENTER,
             :locY=>WatchUi.LAYOUT_VALIGN_BOTTOM, :color=>Graphics.COLOR_WHITE});
         
-        var currentYear = Time.Gregorian.info(new Time.Moment(Time.now().value()), Time.FORMAT_SHORT).year;
-
         var hours = new $.NumberFactory(0, 23, 1, {:font=>Graphics.FONT_MEDIUM});
         var minutes = new $.NumberFactory(0, 59, 1, {:font=>Graphics.FONT_MEDIUM});
         var seconds = new $.NumberFactory(0, 59, 1, {:font=>Graphics.FONT_MEDIUM});
-        var day = new $.NumberFactory(1, 31, 1, {:font=>Graphics.FONT_MEDIUM});
-        var month = new $.NumberFactory(1, 12, 1, {:font=>Graphics.FONT_MEDIUM});
-        var year = new $.NumberFactory(currentYear-5, currentYear+5, 1, {:font=>Graphics.FONT_MEDIUM});
         
         Picker.initialize({
             :title=>title, 
-            :pattern=>[hours, new Text({:text=>":"}), minutes, new Text({:text=>":"}), seconds, new Text({:text=>" "}), day, new Text({:text=>"/"}), month, new Text({:text=>"/"}), year], 
-            :defaults=>[dateAndTime.hour, 0, dateAndTime.min, 0, dateAndTime.sec, 0, dateAndTime.day-1, 0, dateAndTime.month-1, 0, dateAndTime.year-currentYear+5]});
+            :pattern=>[hours, new Text({:text=>":"}), minutes, new Text({:text=>":"}), seconds], 
+            :defaults=>[dateAndTime.hour, 0, dateAndTime.min, 0, dateAndTime.sec]});
     }
 
     //! Update the view
@@ -444,21 +439,40 @@ class DateAndTimePickerDelegate extends WatchUi.PickerDelegate {
     //! @return true if handled, false otherwise
     public function onAccept(values as Array) as Boolean {
 
+        var historyData = Storage.getValue("history_data") as Dictionary<Number, Array<Number>>?;
+        var nbOfDatapoints = historyData[_medication_id].size();
+
+        var oldTimestamp = historyData[_medication_id][_datapoint_index];
+        var oldMoment = Time.Gregorian.info(new Time.Moment(oldTimestamp), Time.FORMAT_SHORT);
+
         var moment = Time.Gregorian.moment({
             :hour=>values[0],
             :minute=>values[2],
             :second=>values[4],
-            :day=>values[6],
-            :month=>values[8],
-            :year=>values[10]
+            :day=>oldMoment.day,
+            :month=>oldMoment.month,
+            :year=>oldMoment.year
         });
-        var newDatapoint = moment.value();
+        var newTimestamp = moment.value();
 
-        var historyData = Storage.getValue("history_data") as Dictionary<Number, Array<Number>>?;
-        var nbOfDatapoints = historyData[_medication_id].size();
+        // Delete the old point from the array and search where the new one should go to maintain the correct ordering in time
+        historyData[_medication_id].remove(oldTimestamp);
+        var indexForNewTimestamp = 0;
+        for (var i = historyData[_medication_id].size()-1; i >= 0; i--) {
+            if (historyData[_medication_id][i] < newTimestamp) {
+                indexForNewTimestamp = i + 1;
+            }
+        }
 
-        // TODO : Need to delete the old point for the array and re-insert the new one in the right place to maintain the correct ordering in time
-        historyData[_medication_id][_datapoint_index] = newDatapoint;
+        // Add an entry to the array
+        historyData[_medication_id].add(newTimestamp);
+
+        // Insert the new timestamp at the "indexForNewTimestamp" location
+        for (var i = historyData[_medication_id].size()-1; i > indexForNewTimestamp; i--) {
+            historyData[_medication_id][i] = historyData[_medication_id][i-1];
+        }
+        historyData[_medication_id][indexForNewTimestamp] = newTimestamp;
+
         Storage.setValue("history_data", historyData);
 
         var current_menu = viewStack[viewStack.size()-2] as Menu2;
