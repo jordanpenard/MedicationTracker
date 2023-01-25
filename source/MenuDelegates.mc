@@ -142,47 +142,11 @@ class HistoryMenuDelegate extends WatchUi.Menu2InputDelegate {
     //! Handle an item being selected
     //! @param item The selected menu item
     public function onSelect(item as MenuItem) as Void {
-        var id = item.getId() as Integer;
-        var historyMenu = new WatchUi.Menu2({:title=>Properties.getValue("medication"+id+"_name")});
+        var medicationId = item.getId() as Integer;
+        var historyMenu = new WatchUi.Menu2({:title=>Properties.getValue("medication"+medicationId+"_name")});
 
-        var historyData = Storage.getValue("history_data") as Dictionary<Number, Array<Number>>?;
-        if (historyData == null or historyData[id] == null) {
-            historyMenu.addItem(new MenuItem(Application.loadResource($.Rez.Strings.no_data_yet), null, 0, {}));
-            ViewManager.pushView(historyMenu, new MedicationTrackerDelegate(), WatchUi.SLIDE_LEFT);
-
-        } else {
-            var historyDataForMedication = historyData[id];
-            for(var i = historyDataForMedication.size()-1; i >= 0; i--){
-                var timestamp = new Time.Moment(historyDataForMedication[i] as Number);
-
-                var date = Gregorian.info(timestamp, Time.FORMAT_SHORT);
-                var dateString = Lang.format(
-                    "$1$:$2$:$3$ $4$/$5$/$6$",
-                    [
-                        date.hour.format("%02d"),
-                        date.min.format("%02d"),
-                        date.sec.format("%02d"),
-                        date.day.format("%02d"),
-                        date.month.format("%02d"),
-                        date.year
-                    ]
-                );
-
-                var previousTimestamp;
-                if (i == historyDataForMedication.size()-1) {
-                    previousTimestamp = new Moment(Time.now().value());
-                } else {
-                    previousTimestamp = new Time.Moment(historyDataForMedication[i+1] as Number);
-                }
-
-                var deltaInSeconds = timestamp.subtract(previousTimestamp).value();
-                var deltaInHours = deltaInSeconds/3600;
-
-                historyMenu.addItem(new MenuItem(dateString, deltaInHours.toString()+"h", i, {}));
-            }
-            // TODO : Add a custom handler here to allow deleting or editing data points
-            ViewManager.pushView(historyMenu, new DatapointTrackerDelegate(), WatchUi.SLIDE_LEFT);
-        }
+        Helper.populateHistoryMenu(historyMenu, medicationId);
+        ViewManager.pushView(historyMenu, new DatapointDelegate(medicationId), WatchUi.SLIDE_LEFT);
     }
 
     //! Handle the back key being pressed
@@ -290,17 +254,82 @@ class MedicationTrackerDelegate extends WatchUi.BehaviorDelegate {
     }
 }
 
-class DatapointTrackerDelegate extends WatchUi.Menu2InputDelegate {
+class DatapointDelegate extends WatchUi.Menu2InputDelegate {
+    var _medication_id as Number;
 
     //! Constructor
-    public function initialize() {
+    public function initialize(medication_id) {
         Menu2InputDelegate.initialize();
+        _medication_id = medication_id;
     }
 
     //! Handle an item being selected
     //! @param item The selected menu item
     public function onSelect(item as MenuItem) as Void {
-        var id = item.getId() as String;
+        var datapointIndex = item.getId() as Number;
+
+        if (datapointIndex != -1) {
+            var historyData = Storage.getValue("history_data") as Dictionary<Number, Array<Number>>?;
+            var timestamp = new Time.Moment(historyData[_medication_id][datapointIndex] as Number);
+            var dateString = Helper.formatTimestamp(timestamp);
+
+            var datapointMenu = new WatchUi.Menu2({:title=>dateString});
+            
+            datapointMenu.addItem(new MenuItem(Application.loadResource($.Rez.Strings.edit), null, "edit", {}));
+            datapointMenu.addItem(new MenuItem(Application.loadResource($.Rez.Strings.delete), null, "delete", {}));
+            
+            ViewManager.pushView(datapointMenu, new datapointEditMenuDelegate(_medication_id, datapointIndex), WatchUi.SLIDE_LEFT);
+        }
+    }
+
+    //! Handle the back key being pressed
+    public function onBack() as Void {
+        ViewManager.popView(WatchUi.SLIDE_RIGHT);
+    }
+}
+
+class datapointEditMenuDelegate extends WatchUi.Menu2InputDelegate {
+    var _medication_id as Number;
+    var _datapoint_index as Number;
+
+    //! Constructor
+    public function initialize(medication_id, datapoint_index) {
+        Menu2InputDelegate.initialize();
+        _medication_id = medication_id;
+        _datapoint_index = datapoint_index;
+    }
+
+    //! Handle an item being selected
+    //! @param item The selected menu item
+    public function onSelect(item as MenuItem) as Void {
+        var action = item.getId() as String;
+
+        if (action.equals("edit")) {
+            ViewManager.pushView(
+                new DateAndTimePicker(_medication_id, _datapoint_index),
+                new DateAndTimePickerDelegate(_medication_id, _datapoint_index),
+                WatchUi.SLIDE_LEFT
+            );
+
+        } else if (action.equals("delete")) {
+            var historyData = Storage.getValue("history_data") as Dictionary<Number, Array<Number>>?;
+            var datapoint = historyData[_medication_id][_datapoint_index];
+            var nbOfDatapoints = historyData[_medication_id].size();
+
+            historyData[_medication_id].remove(datapoint);
+            Storage.setValue("history_data", historyData);
+
+            var parent_menu = viewStack[viewStack.size()-2] as Menu2;
+            for (var i = 0; i < nbOfDatapoints; i++) {
+                parent_menu.deleteItem(0);
+            }
+            Helper.populateHistoryMenu(parent_menu, _medication_id);
+            ViewManager.popView(WatchUi.SLIDE_RIGHT);
+            WatchUi.requestUpdate();
+
+        } else {
+
+        }
     }
 
     //! Handle the back key being pressed

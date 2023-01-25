@@ -383,3 +383,97 @@ class MedicationNamePickerDelegate extends WatchUi.PickerDelegate {
     }
 
 }
+
+//! Main picker that shows all the other pickers
+class DateAndTimePicker extends WatchUi.Picker {
+
+    //! Constructor
+    public function initialize(medicationId as Number, datapointIndex as Number) {
+
+        var historyData = Storage.getValue("history_data") as Dictionary<Number, Array<Number>>?;
+        var dateAndTime = Time.Gregorian.info(new Time.Moment(historyData[medicationId][datapointIndex]), Time.FORMAT_SHORT);
+
+        var title = new WatchUi.Text({:text=>$.Rez.Strings.edit, :locX=>WatchUi.LAYOUT_HALIGN_CENTER,
+            :locY=>WatchUi.LAYOUT_VALIGN_BOTTOM, :color=>Graphics.COLOR_WHITE});
+        
+        var currentYear = Time.Gregorian.info(new Time.Moment(Time.now().value()), Time.FORMAT_SHORT).year;
+
+        var hours = new $.NumberFactory(0, 23, 1, {:font=>Graphics.FONT_MEDIUM});
+        var minutes = new $.NumberFactory(0, 59, 1, {:font=>Graphics.FONT_MEDIUM});
+        var seconds = new $.NumberFactory(0, 59, 1, {:font=>Graphics.FONT_MEDIUM});
+        var day = new $.NumberFactory(1, 31, 1, {:font=>Graphics.FONT_MEDIUM});
+        var month = new $.NumberFactory(1, 12, 1, {:font=>Graphics.FONT_MEDIUM});
+        var year = new $.NumberFactory(currentYear-5, currentYear+5, 1, {:font=>Graphics.FONT_MEDIUM});
+        
+        Picker.initialize({
+            :title=>title, 
+            :pattern=>[hours, new Text({:text=>":"}), minutes, new Text({:text=>":"}), seconds, new Text({:text=>" "}), day, new Text({:text=>"/"}), month, new Text({:text=>"/"}), year], 
+            :defaults=>[dateAndTime.hour, 0, dateAndTime.min, 0, dateAndTime.sec, 0, dateAndTime.day-1, 0, dateAndTime.month-1, 0, dateAndTime.year-currentYear+5]});
+    }
+
+    //! Update the view
+    //! @param dc Device Context
+    public function onUpdate(dc as Dc) as Void {
+        //dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
+        dc.clear();
+        Picker.onUpdate(dc);
+    }
+}
+
+//! Responds to a picker selection or cancellation
+class DateAndTimePickerDelegate extends WatchUi.PickerDelegate {
+    var _medication_id as Number;
+    var _datapoint_index as Number;
+
+    //! Constructor
+    public function initialize(medicationId as Number, datapointIndex as Number) {
+        PickerDelegate.initialize();
+        _medication_id = medicationId;
+        _datapoint_index = datapointIndex;
+    }
+
+    //! Handle a cancel event from the picker
+    //! @return true if handled, false otherwise
+    public function onCancel() as Boolean {
+        ViewManager.popView(WatchUi.SLIDE_IMMEDIATE);
+        return true;
+    }
+
+    //! When a user selects a picker, start that picker
+    //! @param values The values chosen in the picker
+    //! @return true if handled, false otherwise
+    public function onAccept(values as Array) as Boolean {
+
+        var moment = Time.Gregorian.moment({
+            :hour=>values[0],
+            :minute=>values[2],
+            :second=>values[4],
+            :day=>values[6],
+            :month=>values[8],
+            :year=>values[10]
+        });
+        var newDatapoint = moment.value();
+
+        var historyData = Storage.getValue("history_data") as Dictionary<Number, Array<Number>>?;
+        var nbOfDatapoints = historyData[_medication_id].size();
+
+        // TODO : Need to delete the old point for the array and re-insert the new one in the right place to maintain the correct ordering in time
+        historyData[_medication_id][_datapoint_index] = newDatapoint;
+        Storage.setValue("history_data", historyData);
+
+        var current_menu = viewStack[viewStack.size()-2] as Menu2;
+        current_menu.setTitle(Helper.formatTimestamp(moment));
+
+        var parent_menu = viewStack[viewStack.size()-3] as Menu2;
+        for (var i = 0; i < nbOfDatapoints; i++) {
+            parent_menu.deleteItem(0);
+        }
+        Helper.populateHistoryMenu(parent_menu, _medication_id);
+
+        ViewManager.popView(WatchUi.SLIDE_RIGHT);
+        WatchUi.requestUpdate();
+
+        return true;
+    }
+
+}

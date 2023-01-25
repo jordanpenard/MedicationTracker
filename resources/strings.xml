@@ -24,4 +24,6 @@
     <string id="ago" scope="glance">ago</string>
     <string id="ok">OK</string>
     <string id="no_data_yet">No data yet</string>
+    <string id="edit">Edit</string>
+    <string id="delete">Delete</string>
 </resources>
