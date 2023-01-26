@@ -98,6 +98,11 @@ class TakeConfirmationDelegate extends WatchUi.ConfirmationDelegate {
         ConfirmationDelegate.initialize();
     }
 
+    //! Callback for timer
+    public function timerCallback() as Void {
+        System.exit();
+    }
+
     function onResponse(response) as Boolean {
         if (response == WatchUi.CONFIRM_YES) {
             var historyData = Storage.getValue("history_data") as Dictionary<Number, Array<Number>>?;
@@ -128,7 +133,15 @@ class TakeConfirmationDelegate extends WatchUi.ConfirmationDelegate {
             }
 
             Storage.setValue("history_data", historyData);
-            ViewManager.popView(WatchUi.SLIDE_RIGHT);
+
+            // Pushing the view twice because the confirmation dialog will automaticaly pop a view out of the screen
+            var greenCheckView = new GreenCheckView();
+            ViewManager.pushView(greenCheckView, new WatchUi.BehaviorDelegate(), WatchUi.SLIDE_LEFT);
+            ViewManager.pushView(greenCheckView, new WatchUi.BehaviorDelegate(), WatchUi.SLIDE_LEFT);
+
+            // Closing the app automaticaly after 1sec of showing the green check image after a med has been taken
+            var exitAppTimeout = new Timer.Timer();
+            exitAppTimeout.start(method(:timerCallback), 1000, false);
         }
         return true;
     }

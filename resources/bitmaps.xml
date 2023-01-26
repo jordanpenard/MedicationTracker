@@ -1,5 +1,6 @@
 <resources>
     <bitmap id="LauncherIcon" filename="images/logo.png" />
+    <bitmap id="GreenCheck" filename="images/green-check.png" scaleX="80%" scaleRelativeTo="screen" />
     <bitmap id="Tablet" filename="images/tablet-white.png" scaleX="80%" scaleRelativeTo="image" />
     <bitmap id="Spray" filename="images/spray-white.png" />
     <bitmap id="TabletGlance" scope="glance" filename="images/tablet-white.png" scaleX="50%" scaleRelativeTo="image" />
