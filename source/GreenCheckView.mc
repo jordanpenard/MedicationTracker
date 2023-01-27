@@ -15,9 +15,6 @@ class GreenCheckView extends WatchUi.View {
     //! Load the resources
     //! @param dc Device context
     public function onLayout(dc as Dc) as Void {
-        dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
-        //dc.fillRectangle(0, 0, dc.getWidth(), dc.getHeight());
-        _green_check.draw(dc);
     }
 
     //! Restore the state of the app and prepare the view to be shown
@@ -27,6 +24,9 @@ class GreenCheckView extends WatchUi.View {
     //! Update the view
     //! @param dc Device context
     public function onUpdate(dc as Dc) as Void {
+        //dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
+        //dc.fillRectangle(0, 0, dc.getWidth(), dc.getHeight());
+        _green_check.draw(dc);
     }
 
 }
