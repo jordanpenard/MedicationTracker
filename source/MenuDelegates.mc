@@ -71,79 +71,56 @@ class TakeMenuDelegate extends WatchUi.Menu2InputDelegate {
         Menu2InputDelegate.initialize();
     }
 
-    //! Handle an item being selected
-    //! @param item The selected menu item
-    public function onSelect(item as MenuItem) as Void {
-        var id = item.getId() as Number;
-
-        var message = Application.loadResource($.Rez.Strings.take)+" "+Properties.getValue("medication"+id+"_name")+"?";
-        var dialog = new WatchUi.Confirmation(message);
-        ViewManager.pushView(dialog, new TakeConfirmationDelegate(id), WatchUi.SLIDE_IMMEDIATE);
-    }
-
-    //! Handle the back key being pressed
-    public function onBack() as Void {
-        ViewManager.popView(WatchUi.SLIDE_RIGHT);
-    }
-}
-
-
-class TakeConfirmationDelegate extends WatchUi.ConfirmationDelegate {
-    
-    var id;
-
-    //! Constructor
-    public function initialize(medication_id) {
-        self.id = medication_id;
-        ConfirmationDelegate.initialize();
-    }
-
     //! Callback for timer
     public function timerCallback() as Void {
         System.exit();
     }
 
-    function onResponse(response) as Boolean {
-        if (response == WatchUi.CONFIRM_YES) {
-            var historyData = Storage.getValue("history_data") as Dictionary<Number, Array<Number>>?;
-            var timestamp = Time.now().value();
+    //! Handle an item being selected
+    //! @param item The selected menu item
+    public function onSelect(item as MenuItem) as Void {
+        var medicationId = item.getId() as Number;
 
-            if (historyData == null) {
-                historyData = {id=>[timestamp]};
-            } else if (historyData[id] == null) {
-                historyData[id] = [timestamp];
-            } else {
-                historyData[id].add(timestamp);
-            }
+        var historyData = Storage.getValue("history_data") as Dictionary<Number, Array<Number>>?;
+        var timestamp = Time.now().value();
 
-            // Flush old data out of the database
-            var retentionUnitMap = {0=>7*Gregorian.SECONDS_PER_DAY,
-                                    1=>31*Gregorian.SECONDS_PER_DAY,
-                                    2=>Gregorian.SECONDS_PER_YEAR};
-            var retention = Properties.getValue("retention_length") * retentionUnitMap[Properties.getValue("retention_unit")];
-            var retentionLimit = Time.now().subtract(new Time.Duration(retention)).value();
-            for (var i = 1; i <= Helper.nbMedications; i++) {
-                if (historyData[i] != null) {
-                    for (var j = historyData[i].size()-1; j >= 0; j--) {
-                        if (historyData[i][j] < retentionLimit) {
-                            historyData[i] = historyData[i].slice(j+1, historyData[i].size());
-                        }
+        if (historyData == null) {
+            historyData = {medicationId=>[timestamp]};
+        } else if (historyData[medicationId] == null) {
+            historyData[medicationId] = [timestamp];
+        } else {
+            historyData[medicationId].add(timestamp);
+        }
+
+        // Flush old data out of the database
+        var retentionUnitMap = {0=>7*Gregorian.SECONDS_PER_DAY,
+                                1=>31*Gregorian.SECONDS_PER_DAY,
+                                2=>Gregorian.SECONDS_PER_YEAR};
+        var retention = Properties.getValue("retention_length") * retentionUnitMap[Properties.getValue("retention_unit")];
+        var retentionLimit = Time.now().subtract(new Time.Duration(retention)).value();
+        for (var i = 1; i <= Helper.nbMedications; i++) {
+            if (historyData[i] != null) {
+                for (var j = historyData[i].size()-1; j >= 0; j--) {
+                    if (historyData[i][j] < retentionLimit) {
+                        historyData[i] = historyData[i].slice(j+1, historyData[i].size());
                     }
                 }
             }
-
-            Storage.setValue("history_data", historyData);
-
-            // Pushing the view twice because the confirmation dialog will automaticaly pop a view out of the screen
-            var greenCheckView = new GreenCheckView();
-            ViewManager.pushView(greenCheckView, new WatchUi.BehaviorDelegate(), WatchUi.SLIDE_LEFT);
-            ViewManager.pushView(greenCheckView, new WatchUi.BehaviorDelegate(), WatchUi.SLIDE_LEFT);
-
-            // Closing the app automaticaly after 1sec of showing the green check image after a med has been taken
-            var exitAppTimeout = new Timer.Timer();
-            exitAppTimeout.start(method(:timerCallback), 1000, false);
         }
-        return true;
+
+        Storage.setValue("history_data", historyData);
+
+        var greenCheckView = new GreenCheckView();
+        ViewManager.pushView(greenCheckView, new WatchUi.BehaviorDelegate(), WatchUi.SLIDE_LEFT);
+
+        // Closing the app automaticaly after 1sec of showing the green check image after a med has been taken
+        var exitAppTimeout = new Timer.Timer();
+        exitAppTimeout.start(method(:timerCallback), 1000, false);
+    }
+
+    //! Handle the back key being pressed
+    public function onBack() as Void {
+        ViewManager.popView(WatchUi.SLIDE_RIGHT);
     }
 }
 
