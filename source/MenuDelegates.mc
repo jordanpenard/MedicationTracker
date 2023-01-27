@@ -111,7 +111,7 @@ class TakeMenuDelegate extends WatchUi.Menu2InputDelegate {
         Storage.setValue("history_data", historyData);
 
         var greenCheckView = new GreenCheckView();
-        ViewManager.pushView(greenCheckView, new WatchUi.BehaviorDelegate(), WatchUi.SLIDE_LEFT);
+        ViewManager.pushView(greenCheckView, new WatchUi.BehaviorDelegate(), WatchUi.SLIDE_BLINK);
 
         // Closing the app automaticaly after 1sec of showing the green check image after a med has been taken
         var exitAppTimeout = new Timer.Timer();
