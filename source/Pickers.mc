@@ -461,6 +461,7 @@ class DateAndTimePickerDelegate extends WatchUi.PickerDelegate {
         for (var i = historyData[_medication_id].size()-1; i >= 0; i--) {
             if (historyData[_medication_id][i] < newTimestamp) {
                 indexForNewTimestamp = i + 1;
+                break;
             }
         }
 
