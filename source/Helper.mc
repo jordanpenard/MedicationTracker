@@ -88,4 +88,11 @@ class Helper {
         }
     }
 
+    public function isLeapYear(year as Number) as Number {
+        return (year % 4 != 0) || ((year % 100 == 0) && (year % 400 != 0)) ? 0 : 1;
+    }
+
+    public function daysInAMonth(month as Number, year as Number) as Number {
+        return (month == 2) ? (28 + Helper.isLeapYear(year)) : 31 - (month - 1) % 7 % 2;
+    }
 }

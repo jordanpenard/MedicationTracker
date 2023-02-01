@@ -53,6 +53,10 @@ class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
             
             ViewManager.pushView(settingsMenu, new SettingsMenuDelegate(), WatchUi.SLIDE_LEFT);
 
+        } else if (id.equals("test")) {
+            var picker = new TimeAndDatePicker();
+            ViewManager.pushView(picker, new TimeAndDatePickerDelegate(picker), WatchUi.SLIDE_LEFT);
+
         } else {
             WatchUi.requestUpdate();
         }
