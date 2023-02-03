@@ -6,6 +6,11 @@
     <string id="year">Year</string>
     <string id="spray">Spray</string>
     <string id="tablet">Tablet</string>
+    <string id="spray2">Spray2</string>
+    <string id="cream">Cream</string>
+    <string id="injection">Injection</string>
+    <string id="powder">Powder</string>
+    <string id="syrup">Syrup</string>
     <string id="name">Name</string>
     <string id="type">Type</string>
     <string id="status">Status</string>

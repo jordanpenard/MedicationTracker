@@ -5,26 +5,47 @@ import Toybox.Application;
 
 class Helper {
 
-    public const nbMedicationType = 2;
+    public const nbMedicationType = 7;
 
     (:glance)
     public const nbMedications = 4;
 
     (:glance)
     public function getMedicationIconeSymbol(medicationId as Number, glanceView as Boolean) as Symbol {
-        switch (Properties.getValue("medication"+medicationId+"_type")) {
+        if (glanceView) {
+            switch (Properties.getValue("medication"+medicationId+"_type")) {
             case 0: 
-                if (glanceView) {
-                    return $.Rez.Drawables.SprayGlance;
-                } else {
-                    return $.Rez.Drawables.Spray;
-                }
+                return $.Rez.Drawables.SprayGlance;
             case 1:
-                if (glanceView) {
-                    return $.Rez.Drawables.TabletGlance;
-                } else {
-                    return $.Rez.Drawables.Tablet;
-                }            
+                return $.Rez.Drawables.TabletGlance;
+            case 2:
+                return $.Rez.Drawables.Spray2Glance;
+            case 3:
+                return $.Rez.Drawables.CreamGlance;
+            case 4:
+                return $.Rez.Drawables.InjectionGlance;
+            case 5:
+                return $.Rez.Drawables.PowderGlance;
+            case 6:
+                return $.Rez.Drawables.SyrupGlance;
+            }
+        } else {
+            switch (Properties.getValue("medication"+medicationId+"_type")) {
+            case 0: 
+                return $.Rez.Drawables.Spray;
+            case 1:
+                return $.Rez.Drawables.Tablet;
+            case 2:
+                return $.Rez.Drawables.Spray2;
+            case 3:
+                return $.Rez.Drawables.Cream;
+            case 4:
+                return $.Rez.Drawables.Injection;
+            case 5:
+                return $.Rez.Drawables.Powder;
+            case 6:
+                return $.Rez.Drawables.Syrup;
+            }
         }
         throw new Toybox.Lang.Exception();
     }
@@ -33,6 +54,11 @@ class Helper {
         switch (i) {
             case 0: return WatchUi.loadResource(Rez.Strings.spray);
             case 1: return WatchUi.loadResource(Rez.Strings.tablet);
+            case 2: return WatchUi.loadResource(Rez.Strings.spray2);
+            case 3: return WatchUi.loadResource(Rez.Strings.cream);
+            case 4: return WatchUi.loadResource(Rez.Strings.injection);
+            case 5: return WatchUi.loadResource(Rez.Strings.powder);
+            case 6: return WatchUi.loadResource(Rez.Strings.syrup);
         }
         throw new Toybox.Lang.Exception();
     }

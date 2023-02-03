@@ -4,8 +4,13 @@
     <string id="week">Semaine</string>
     <string id="month">Mois</string>
     <string id="year">Année</string>
-    <string id="spray">Spray</string>
+    <string id="spray">Vaporisateur</string>
     <string id="tablet">Cachet</string>
+    <string id="spray2">Vaporisateur2</string>
+    <string id="cream">Creme</string>
+    <string id="injection">Injection</string>
+    <string id="powder">Poudre</string>
+    <string id="syrup">Sirop</string>
     <string id="name">Nom</string>
     <string id="type">Type</string>
     <string id="status">Status</string>
