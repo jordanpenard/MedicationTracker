@@ -53,10 +53,6 @@ class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
             
             ViewManager.pushView(settingsMenu, new SettingsMenuDelegate(), WatchUi.SLIDE_LEFT);
 
-        } else if (id.equals("test")) {
-            var picker = new TimeAndDatePicker();
-            ViewManager.pushView(picker, new TimeAndDatePickerDelegate(picker), WatchUi.SLIDE_LEFT);
-
         } else {
             WatchUi.requestUpdate();
         }
@@ -298,21 +294,59 @@ class datapointEditMenuDelegate extends WatchUi.Menu2InputDelegate {
         _datapoint_index = datapoint_index;
     }
 
+    public function timeAndDateEditDone(newTimestamp as Number) as Void {
+
+        var historyData = Storage.getValue("history_data") as Dictionary<Number, Array<Number>>?;
+        var nbOfDatapoints = historyData[_medication_id].size();
+
+        var oldTimestamp = historyData[_medication_id][_datapoint_index];
+        var oldMoment = Time.Gregorian.info(new Time.Moment(oldTimestamp), Time.FORMAT_SHORT);
+
+        // Delete the old point from the array and search where the new one should go to maintain the correct ordering in time
+        historyData[_medication_id].remove(oldTimestamp);
+        var indexForNewTimestamp = 0;
+        for (var i = historyData[_medication_id].size()-1; i >= 0; i--) {
+            if (historyData[_medication_id][i] < newTimestamp) {
+                indexForNewTimestamp = i + 1;
+                break;
+            }
+        }
+
+        // Add an entry to the array
+        historyData[_medication_id].add(newTimestamp);
+
+        // Insert the new timestamp at the "indexForNewTimestamp" location
+        for (var i = historyData[_medication_id].size()-1; i > indexForNewTimestamp; i--) {
+            historyData[_medication_id][i] = historyData[_medication_id][i-1];
+        }
+        historyData[_medication_id][indexForNewTimestamp] = newTimestamp;
+
+        Storage.setValue("history_data", historyData);
+
+        var current_menu = viewStack[viewStack.size()-2] as Menu2;
+        current_menu.setTitle(Helper.formatTimestamp(new Moment(newTimestamp)));
+
+        var parent_menu = viewStack[viewStack.size()-3] as Menu2;
+        for (var i = 0; i < nbOfDatapoints; i++) {
+            parent_menu.deleteItem(0);
+        }
+        Helper.populateHistoryMenu(parent_menu, _medication_id);
+
+    }
+
     //! Handle an item being selected
     //! @param item The selected menu item
     public function onSelect(item as MenuItem) as Void {
         var action = item.getId() as String;
 
+        var historyData = Storage.getValue("history_data") as Dictionary<Number, Array<Number>>?;
+        var datapoint = historyData[_medication_id][_datapoint_index];
+        
         if (action.equals("edit")) {
-            ViewManager.pushView(
-                new DateAndTimePicker(_medication_id, _datapoint_index),
-                new DateAndTimePickerDelegate(_medication_id, _datapoint_index),
-                WatchUi.SLIDE_LEFT
-            );
+            var picker = new TimeAndDatePicker(datapoint, method(:timeAndDateEditDone));
+            ViewManager.pushView(picker, new TimeAndDatePickerDelegate(picker), WatchUi.SLIDE_LEFT);
 
         } else if (action.equals("delete")) {
-            var historyData = Storage.getValue("history_data") as Dictionary<Number, Array<Number>>?;
-            var datapoint = historyData[_medication_id][_datapoint_index];
             var nbOfDatapoints = historyData[_medication_id].size();
 
             historyData[_medication_id].remove(datapoint);

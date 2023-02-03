@@ -150,15 +150,19 @@ class TimeAndDatePicker extends WatchUi.View {
     var downButton;
     var validateButton;
 
-    var timestamp = 1675186833;
+    var timestamp = 0;
 
     var font = Graphics.FONT_MEDIUM;
     var screenWidth = 0;
 
     var timeNotDate = true;
+
+    var _callback;
     
-    function initialize() {
+    function initialize(initialTimestamp, callback) {
         WatchUi.View.initialize();
+        _callback = callback;
+        timestamp = initialTimestamp;
     }
 
     function updateNumberValues() {
@@ -340,7 +344,7 @@ class TimeAndDatePicker extends WatchUi.View {
                 timeNotDate = false;
 
             } else {
-                // TODO : End of time and date typing
+                _callback.invoke(timestamp);
                 ViewManager.popView(WatchUi.SLIDE_RIGHT);
             }
             WatchUi.requestUpdate();
