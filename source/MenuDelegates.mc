@@ -28,7 +28,7 @@ class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
 
             for (var i = 0; i < Helper.nbMedications; i++) {
                 if (Properties.getValue("medication"+i+"_en")){
-                    var bitmap = new WatchUi.Bitmap({:rezId=>Helper.getMedicationIconeSymbol(i, false), :locY=>20});
+                    var bitmap = new WatchUi.Bitmap({:rezId=>Helper.getMedicationIconeSymbol(i), :locY=>20});
                     menu.addItem(new IconMenuItem(Properties.getValue("medication"+i+"_name"), null, i, bitmap, {}));
                 }
             }
@@ -47,7 +47,7 @@ class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
 
             for (var i = 0; i < Helper.nbMedications; i++) {
                 var enabled = Properties.getValue("medication"+i+"_en") ? Application.loadResource($.Rez.Strings.enabled) : Application.loadResource($.Rez.Strings.disabled);
-                var bitmap = new WatchUi.Bitmap({:rezId=>Helper.getMedicationIconeSymbol(i, false), :locY=>20});
+                var bitmap = new WatchUi.Bitmap({:rezId=>Helper.getMedicationIconeSymbol(i), :locY=>20});
                 settingsMenu.addItem(new IconMenuItem(Properties.getValue("medication"+i+"_name"), enabled, i, bitmap, {}));
             }
             
@@ -170,7 +170,7 @@ class SettingsMenuDelegate extends WatchUi.Menu2InputDelegate {
             medicationSettingMenu.addItem(new MenuItem(Application.loadResource($.Rez.Strings.name), Properties.getValue("medication"+id+"_name"), ["name", id], {}));
             medicationSettingMenu.addItem(new ToggleMenuItem(Application.loadResource($.Rez.Strings.status), {:enabled=>Application.loadResource($.Rez.Strings.enabled), :disabled=>Application.loadResource($.Rez.Strings.disabled)}, ["status", id], enabled, {}));
             
-            var bitmap = new WatchUi.Bitmap({:rezId=>Helper.getMedicationIconeSymbol(id.toNumber(), false), :locY=>20});
+            var bitmap = new WatchUi.Bitmap({:rezId=>Helper.getMedicationIconeSymbol(id.toNumber()), :locY=>20});
             medicationSettingMenu.addItem(new IconMenuItem(Application.loadResource($.Rez.Strings.type), Helper.medicationTypeMap(Properties.getValue("medication"+id+"_type")), ["type", id], bitmap, {}));
             
             ViewManager.pushView(medicationSettingMenu, new MedicationSettingMenuMenuDelegate(), WatchUi.SLIDE_LEFT);
@@ -217,7 +217,7 @@ class MedicationSettingMenuMenuDelegate extends WatchUi.Menu2InputDelegate {
             var newType = (currentType == Helper.nbMedicationType-1) ? 0 : (currentType+1);
             Properties.setValue("medication"+id+"_type", newType);
 
-            var bitmap = new WatchUi.Bitmap({:rezId=>Helper.getMedicationIconeSymbol(id, false), :locY=>20});
+            var bitmap = new WatchUi.Bitmap({:rezId=>Helper.getMedicationIconeSymbol(id), :locY=>20});
             var current_menu = viewStack[viewStack.size()-1] as Menu2;
             (current_menu.getItem(2) as IconMenuItem).setIcon(bitmap);
             current_menu.getItem(2).setSubLabel(Helper.medicationTypeMap(newType));

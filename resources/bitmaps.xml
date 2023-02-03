@@ -9,11 +9,4 @@
     <bitmap id="Injection" filename="images/injection-white.png" scaleX="15%" scaleRelativeTo="screen" />
     <bitmap id="Powder" filename="images/powder-white.png" scaleX="15%" scaleRelativeTo="screen" />
     <bitmap id="Syrup" filename="images/syrup-white.png" scaleX="15%" scaleRelativeTo="screen" />
-    <bitmap id="TabletGlance" scope="glance" filename="images/tablet-white.png" scaleX="7%" scaleRelativeTo="screen" />
-    <bitmap id="SprayGlance" scope="glance" filename="images/spray-white.png" scaleX="7%" scaleRelativeTo="screen" />
-    <bitmap id="Spray2Glance" scope="glance" filename="images/spray2-white.png" scaleX="7%" scaleRelativeTo="screen" />
-    <bitmap id="CreamGlance" scope="glance" filename="images/cream-white.png" scaleX="7%" scaleRelativeTo="screen" />
-    <bitmap id="InjectionGlance" scope="glance" filename="images/injection-white.png" scaleX="7%" scaleRelativeTo="screen" />
-    <bitmap id="PowderGlance" scope="glance" filename="images/powder-white.png" scaleX="7%" scaleRelativeTo="screen" />
-    <bitmap id="SyrupGlance" scope="glance" filename="images/syrup-white.png" scaleX="7%" scaleRelativeTo="screen" />
 </resources>

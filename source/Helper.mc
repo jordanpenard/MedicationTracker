@@ -10,27 +10,8 @@ class Helper {
     (:glance)
     public const nbMedications = 4;
 
-    (:glance)
-    public function getMedicationIconeSymbol(medicationId as Number, glanceView as Boolean) as Symbol {
-        if (glanceView) {
-            switch (Properties.getValue("medication"+medicationId+"_type")) {
-            case 0: 
-                return $.Rez.Drawables.SprayGlance;
-            case 1:
-                return $.Rez.Drawables.TabletGlance;
-            case 2:
-                return $.Rez.Drawables.Spray2Glance;
-            case 3:
-                return $.Rez.Drawables.CreamGlance;
-            case 4:
-                return $.Rez.Drawables.InjectionGlance;
-            case 5:
-                return $.Rez.Drawables.PowderGlance;
-            case 6:
-                return $.Rez.Drawables.SyrupGlance;
-            }
-        } else {
-            switch (Properties.getValue("medication"+medicationId+"_type")) {
+    public function getMedicationIconeSymbol(medicationId as Number) as Symbol {
+        switch (Properties.getValue("medication"+medicationId+"_type")) {
             case 0: 
                 return $.Rez.Drawables.Spray;
             case 1:
@@ -45,7 +26,6 @@ class Helper {
                 return $.Rez.Drawables.Powder;
             case 6:
                 return $.Rez.Drawables.Syrup;
-            }
         }
         throw new Toybox.Lang.Exception();
     }

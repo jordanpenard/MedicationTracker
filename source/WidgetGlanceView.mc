@@ -30,9 +30,8 @@ class WidgetGlanceView extends Ui.GlanceView {
             var deltaInHours = deltaInSeconds/3600;
             
             var text = Properties.getValue("medication"+i+"_name") + " : "+deltaInHours.toString()+"h "+Application.loadResource($.Rez.Strings.ago);
-            var bitmapSymbole = Helper.getMedicationIconeSymbol(i, true);
             
-            dataToDisplay.add([text, bitmapSymbole]);
+            dataToDisplay.add(text);
           }
         }
       }
@@ -52,10 +51,7 @@ class WidgetGlanceView extends Ui.GlanceView {
 
       var y = 0;
       for (var i = 0; i < dataToDisplay.size(); i++) {
-        var text = dataToDisplay[i][0];
-        var bitmap = WatchUi.loadResource(dataToDisplay[i][1]);
-        dc.drawText(35, y+margin, font, text, Graphics.TEXT_JUSTIFY_LEFT);
-        dc.drawBitmap(0, y+margin, bitmap);
+        dc.drawText(0, y+margin, font, dataToDisplay[i], Graphics.TEXT_JUSTIFY_LEFT);
         y += margin+textHight;
       }
 
