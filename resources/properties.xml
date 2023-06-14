@@ -1,4 +1,5 @@
 <properties>
+    <property id="flush_old_data" type="boolean">true</property>
     <property id="retention_length" type="number">1</property>
     <property id="retention_unit" type="number">1</property>
     <property id="medication0_name" type="string">Medication 1</property>

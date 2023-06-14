@@ -24,6 +24,7 @@
     <string id="history">History</string>
     <string id="settings">Settings</string>
     <string id="keep_data_for">Keep data for</string>
+    <string id="flush_old_data">Flush old data</string>
     <string id="enabled">Enabled</string>
     <string id="disabled">Disabled</string>
     <string id="ago" scope="glance">ago</string>

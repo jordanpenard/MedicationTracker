@@ -24,6 +24,7 @@
     <string id="history">Historique</string>
     <string id="settings">Réglages</string>
     <string id="keep_data_for">Garder les données</string>
+    <string id="flush_old_data">Suprimer ancienne données</string>
     <string id="enabled">Actif</string>
     <string id="disabled">Désactiver</string>
     <string id="ago" scope="glance">ago</string>

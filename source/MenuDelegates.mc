@@ -41,8 +41,10 @@ class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
 
         } else if (id.equals("settings")) {
             var retention = Properties.getValue("retention_length") + " " + Helper.retentionUnitMap(Properties.getValue("retention_unit"));
+            var flush_old_data = Properties.getValue("flush_old_data");
 
             var settingsMenu = new WatchUi.Menu2({:title=>$.Rez.Strings.settings});
+            settingsMenu.addItem(new ToggleMenuItem(Application.loadResource($.Rez.Strings.flush_old_data), {:enabled=>Application.loadResource($.Rez.Strings.enabled), :disabled=>Application.loadResource($.Rez.Strings.disabled)}, "flush_old_data", flush_old_data, {}));
             settingsMenu.addItem(new MenuItem($.Rez.Strings.keep_data_for, retention, "retention", {}));
 
             for (var i = 0; i < Helper.nbMedications; i++) {
@@ -92,26 +94,29 @@ class TakeMenuDelegate extends WatchUi.Menu2InputDelegate {
             historyData[medicationId].add(timestamp);
         }
 
-        // Flush old data out of the database
-        var retentionUnitMap = {0=>7*Gregorian.SECONDS_PER_DAY,
-                                1=>31*Gregorian.SECONDS_PER_DAY,
-                                2=>Gregorian.SECONDS_PER_YEAR};
-        var retention = Properties.getValue("retention_length") * retentionUnitMap[Properties.getValue("retention_unit")];
-        var retentionLimit = Time.now().subtract(new Time.Duration(retention)).value();
-        for (var i = 1; i <= Helper.nbMedications; i++) {
-            if (historyData[i] != null) {
-                for (var j = historyData[i].size()-1; j >= 0; j--) {
-                    if (historyData[i][j] < retentionLimit) {
-                        historyData[i] = historyData[i].slice(j+1, historyData[i].size());
+        var greenCheckView = new GreenCheckView();
+        ViewManager.pushView(greenCheckView, new WatchUi.BehaviorDelegate(), WatchUi.SLIDE_BLINK);
+
+        if (Properties.getValue("flush_old_data")) {
+            // Flush old data out of the database
+            var retentionUnitMap = {0=>7*Gregorian.SECONDS_PER_DAY,
+                                    1=>31*Gregorian.SECONDS_PER_DAY,
+                                    2=>Gregorian.SECONDS_PER_YEAR};
+            var retention = Properties.getValue("retention_length") * retentionUnitMap[Properties.getValue("retention_unit")];
+            var retentionLimit = Time.now().subtract(new Time.Duration(retention)).value();
+            for (var i = 1; i <= Helper.nbMedications; i++) {
+                if (historyData[i] != null) {
+                    for (var j = historyData[i].size()-1; j >= 0; j--) {
+                        if (historyData[i][j] < retentionLimit) {
+                            historyData[i] = historyData[i].slice(j+1, historyData[i].size());
+                            break;
+                        }
                     }
                 }
             }
         }
 
         Storage.setValue("history_data", historyData);
-
-        var greenCheckView = new GreenCheckView();
-        ViewManager.pushView(greenCheckView, new WatchUi.BehaviorDelegate(), WatchUi.SLIDE_BLINK);
 
         // Closing the app automaticaly after 1sec of showing the green check image after a med has been taken
         var exitAppTimeout = new Timer.Timer();
