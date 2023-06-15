@@ -167,6 +167,11 @@ class SettingsMenuDelegate extends WatchUi.Menu2InputDelegate {
         if (id.equals("retention")) {
             ViewManager.pushView(new RetentionPicker(), new RetentionPickerDelegate(), WatchUi.SLIDE_LEFT);
 
+        } else if (id.equals("flush_old_data")) {
+            var currentStatus = Properties.getValue("flush_old_data") as Boolean;
+            Properties.setValue("flush_old_data", !currentStatus);
+            item.setSubLabel(!currentStatus ? Application.loadResource($.Rez.Strings.enabled) : Application.loadResource($.Rez.Strings.disabled));
+
         } else {
             var enabled = Properties.getValue("medication"+id+"_en");
 
