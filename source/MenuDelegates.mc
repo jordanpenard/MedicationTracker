@@ -232,7 +232,7 @@ class MedicationSettingMenuMenuDelegate extends WatchUi.Menu2InputDelegate {
             (current_menu.getItem(2) as IconMenuItem).setIcon(bitmap);
             current_menu.getItem(2).setSubLabel(Helper.medicationTypeMap(newType));
             var parent_menu = viewStack[viewStack.size()-2] as Menu2;
-            (parent_menu.getItem(id+1) as IconMenuItem).setIcon(bitmap);
+            (parent_menu.getItem(id+2) as IconMenuItem).setIcon(bitmap);
 
         } else {
 
